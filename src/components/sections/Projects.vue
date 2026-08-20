@@ -1,133 +1,237 @@
 <template>
   <section id="projects" class="projects-section">
+
+    <!-- Background -->
+    <div class="projects-bg">
+      <div class="bg-orb orb-1"></div>
+      <div class="bg-orb orb-2"></div>
+      <div class="bg-grid"></div>
+    </div>
+
     <div class="container">
 
-      <!-- =========================
-           SECTION HEADING
-      ========================== -->
+      <!-- Section Header -->
+      <div class="section-header" v-reveal>
 
-      <div class="section-heading" v-reveal="0">
-        <p>My Recent Work</p>
+        <div class="eyebrow">
+          <span class="eyebrow-line"></span>
+          SELECTED WORK
+        </div>
 
         <h2>
-          Featured <span>Projects</span>
+          Projects that
+          <span>make an impact.</span>
         </h2>
+
+        <p>
+          A selection of projects focused on modern UI,
+          scalable frontend architecture, AI integration
+          and meaningful user experiences.
+        </p>
+
       </div>
 
 
-      <!-- =========================
-           PROJECTS GRID
-      ========================== -->
+      <!-- Featured Project -->
+      <article
+        class="featured-project"
+        v-reveal
+        @mousemove="handleFeaturedMove"
+        @mouseleave="resetFeatured"
+        :style="featuredStyle"
+      >
 
+        <div class="featured-glow"></div>
+
+        <!-- Image -->
+        <div class="featured-image">
+
+          <div class="image-overlay"></div>
+
+          <img
+            :src="featuredProject.image"
+            :alt="featuredProject.title"
+          />
+
+          <div class="featured-badge">
+            <span></span>
+            FEATURED PROJECT
+          </div>
+
+          <div class="image-number">
+            01
+          </div>
+
+        </div>
+
+
+        <!-- Content -->
+        <div class="featured-content">
+
+          <div class="project-meta">
+            {{ featuredProject.category }}
+            <span>•</span>
+            {{ featuredProject.year }}
+          </div>
+
+          <h3>
+            {{ featuredProject.title }}
+          </h3>
+
+          <p>
+            {{ featuredProject.description }}
+          </p>
+
+
+          <!-- Tech -->
+          <div class="tech-list">
+
+            <span
+              v-for="tech in featuredProject.technologies"
+              :key="tech"
+            >
+              {{ tech }}
+            </span>
+
+          </div>
+
+
+          <!-- Actions -->
+          <div class="project-actions">
+
+            <a
+              v-if="featuredProject.github"
+              :href="featuredProject.github"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="project-button primary"
+            >
+              <span>View GitHub</span>
+              <span class="button-arrow">↗</span>
+            </a>
+
+            <a
+              v-if="featuredProject.live && featuredProject.live !== '#'"
+              :href="featuredProject.live"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="project-button secondary"
+            >
+              <span>Live Preview</span>
+              <span class="button-arrow">↗</span>
+            </a>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- Project Grid -->
       <div class="projects-grid">
 
-
-        <!-- =========================
-             PROJECT 1 — ATTENDO
-        ========================== -->
-
         <article
+          v-for="(project, index) in projects"
+          :key="project.title"
           class="project-card"
-          v-reveal="0"
+          v-reveal
+          :style="{
+            '--delay': `${index * 100}ms`,
+            transform: `perspective(1200px)
+              rotateX(${cardTransforms[index].y}deg)
+              rotateY(${cardTransforms[index].x}deg)`
+          }"
+          @mousemove="handleCardMove($event, index)"
+          @mouseleave="resetCard(index)"
         >
 
-          <!-- Browser Mockup -->
+          <!-- Image -->
+          <div class="project-image">
 
-          <div class="project-image project-one">
+            <img
+              :src="project.image"
+              :alt="project.title"
+            />
 
-            <div class="browser-bar">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
+            <div class="image-shade"></div>
 
-            <div class="browser-content">
+            <span class="project-index">
+              {{ String(index + 2).padStart(2, "0") }}
+            </span>
 
-              <div class="mock-sidebar">
-                <div class="sidebar-logo"></div>
-                <div class="sidebar-line"></div>
-                <div class="sidebar-line"></div>
-                <div class="sidebar-line"></div>
-                <div class="sidebar-line"></div>
-              </div>
+            <span class="project-category">
+              {{ project.category }}
+            </span>
 
-              <div class="mock-main">
+            <!-- Hover Reveal -->
+            <div class="image-reveal">
 
-                <div class="mock-top">
-                  <div class="mock-heading"></div>
-                  <div class="mock-button"></div>
-                </div>
+              <span>
+                View project
+              </span>
 
-                <div class="mock-cards">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
+              <span class="reveal-arrow">
+                ↗
+              </span>
 
-                <div class="mock-table">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="preview-label">
-              Event Management
             </div>
 
           </div>
 
 
-          <!-- Content -->
+          <!-- Card Content -->
+          <div class="project-card-content">
 
-          <div class="project-content">
+            <div class="project-card-top">
 
-            <div class="project-top">
+              <h3>
+                {{ project.title }}
+              </h3>
 
-              <h3>Attendo</h3>
+              <span class="card-arrow">
+                ↗
+              </span>
 
-              <span class="project-status">
-                Frontend
+            </div>
+
+            <p>
+              {{ project.description }}
+            </p>
+
+
+            <div class="card-tech">
+
+              <span
+                v-for="tech in project.technologies"
+                :key="tech"
+              >
+                {{ tech }}
               </span>
 
             </div>
 
 
-            <p>
-              A modern event management dashboard for managing
-              events, attendees, speakers, agendas and logistics.
-            </p>
-
-
-            <div class="project-tags">
-
-              <span>Vue.js</span>
-              <span>JavaScript</span>
-              <span>Bootstrap</span>
-              <span>CSS</span>
-
-            </div>
-
-
-            <div class="project-links">
+            <div class="card-actions">
 
               <a
-                href="#"
-                class="project-link"
+                v-if="project.github"
+                :href="project.github"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="small-button"
               >
-                GitHub
-                <span>↗</span>
+                GitHub ↗
               </a>
 
               <a
-                href="#"
-                class="project-demo"
+                v-if="project.live && project.live !== '#'"
+                :href="project.live"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="small-button filled"
               >
-                Live Demo
-                <span>↗</span>
+                Live ↗
               </a>
 
             </div>
@@ -136,989 +240,1114 @@
 
         </article>
 
+      </div>
 
 
-        <!-- =========================
-             PROJECT 2 — EBRAINX
-        ========================== -->
+      <!-- Bottom CTA -->
+      <div
+        class="projects-footer"
+        v-reveal
+      >
 
-        <article
-          class="project-card"
-          v-reveal="0.1"
+        <div>
+          <span class="footer-label">
+            MORE PROJECTS
+          </span>
+
+          <h3>
+            Let's build something
+            <span>remarkable.</span>
+          </h3>
+        </div>
+
+        <a
+          href="#contact"
+          class="all-projects-button"
         >
-
-          <div class="project-image project-two">
-
-            <div class="browser-bar">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-
-            <div class="browser-content">
-
-              <div class="mock-sidebar">
-                <div class="sidebar-logo"></div>
-                <div class="sidebar-line"></div>
-                <div class="sidebar-line"></div>
-                <div class="sidebar-line"></div>
-                <div class="sidebar-line"></div>
-              </div>
-
-              <div class="mock-main">
-
-                <div class="mock-top">
-                  <div class="mock-heading"></div>
-                  <div class="mock-button"></div>
-                </div>
-
-                <div class="mock-cards">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-
-                <div class="mock-table">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="preview-label">
-              Corporate Website
-            </div>
-
-          </div>
-
-
-          <div class="project-content">
-
-            <div class="project-top">
-
-              <h3>eBrainX Website</h3>
-
-              <span class="project-status">
-                Website
-              </span>
-
-            </div>
-
-
-            <p>
-              A responsive corporate website featuring modern
-              layouts, services, industries, careers and contact
-              sections.
-            </p>
-
-
-            <div class="project-tags">
-
-              <span>Vue.js</span>
-              <span>JavaScript</span>
-              <span>Bootstrap</span>
-              <span>Tailwind</span>
-
-            </div>
-
-
-            <div class="project-links">
-
-              <a
-                href="#"
-                class="project-link"
-              >
-                GitHub
-                <span>↗</span>
-              </a>
-
-              <a
-                href="#"
-                class="project-demo"
-              >
-                Live Demo
-                <span>↗</span>
-              </a>
-
-            </div>
-
-          </div>
-
-        </article>
-
-
-
-        <!-- =========================
-             PROJECT 3 — PORTFOLIO
-        ========================== -->
-
-        <article
-          class="project-card"
-          v-reveal="0.2"
-        >
-
-          <div class="project-image project-three">
-
-            <div class="browser-bar">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-
-            <div class="browser-content portfolio-preview">
-
-              <div class="portfolio-nav">
-
-                <div class="portfolio-logo"></div>
-
-                <div class="portfolio-links">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-
-              </div>
-
-              <div class="portfolio-hero">
-
-                <div class="portfolio-text">
-
-                  <div></div>
-                  <div></div>
-                  <div></div>
-
-                </div>
-
-                <div class="portfolio-avatar"></div>
-
-              </div>
-
-              <div class="portfolio-buttons">
-                <span></span>
-                <span></span>
-              </div>
-
-            </div>
-
-            <div class="preview-label">
-              Developer Portfolio
-            </div>
-
-          </div>
-
-
-          <div class="project-content">
-
-            <div class="project-top">
-
-              <h3>Developer Portfolio</h3>
-
-              <span class="project-status">
-                Personal
-              </span>
-
-            </div>
-
-
-            <p>
-              A modern responsive developer portfolio with dark
-              and light mode, animations and reusable Vue components.
-            </p>
-
-
-            <div class="project-tags">
-
-              <span>Vue.js</span>
-              <span>Tailwind</span>
-              <span>Bootstrap</span>
-              <span>CSS</span>
-
-            </div>
-
-
-            <div class="project-links">
-
-              <a
-                href="#"
-                class="project-link"
-              >
-                GitHub
-                <span>↗</span>
-              </a>
-
-              <a
-                href="#"
-                class="project-demo"
-              >
-                Live Demo
-                <span>↗</span>
-              </a>
-
-            </div>
-
-          </div>
-
-        </article>
-
-
-
-        <!-- =========================
-             PROJECT 4 — CAREER
-        ========================== -->
-
-        <article
-          class="project-card"
-          v-reveal="0.3"
-        >
-
-          <div class="project-image project-four">
-
-            <div class="browser-bar">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-
-            <div class="browser-content career-preview">
-
-              <div class="career-header">
-
-                <div class="career-logo"></div>
-
-                <div class="career-nav">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-
-              </div>
-
-
-              <div class="career-content">
-
-                <div class="career-title"></div>
-
-                <div class="career-form">
-
-                  <div></div>
-                  <div></div>
-                  <div></div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="preview-label">
-              Career Application
-            </div>
-
-          </div>
-
-
-          <div class="project-content">
-
-            <div class="project-top">
-
-              <h3>Career Application</h3>
-
-              <span class="project-status">
-                Vue App
-              </span>
-
-            </div>
-
-
-            <p>
-              A career application flow with dynamic job information,
-              form handling and route-based application details.
-            </p>
-
-
-            <div class="project-tags">
-
-              <span>Vue.js</span>
-              <span>Vue Router</span>
-              <span>JavaScript</span>
-              <span>CSS</span>
-
-            </div>
-
-
-            <div class="project-links">
-
-              <a
-                href="#"
-                class="project-link"
-              >
-                GitHub
-                <span>↗</span>
-              </a>
-
-              <a
-                href="#"
-                class="project-demo"
-              >
-                Live Demo
-                <span>↗</span>
-              </a>
-
-            </div>
-
-          </div>
-
-        </article>
+          <span>Start a conversation</span>
+          <span>↗</span>
+        </a>
 
       </div>
 
     </div>
+
   </section>
 </template>
 
 
+<script setup>
+import { computed, ref } from "vue";
+
+
+/* =========================================================
+   PROJECT DATA
+========================================================= */
+
+const featuredProject = {
+  title: "Attendo Event Management",
+  category: "Frontend Application",
+  year: "2026",
+
+  description:
+    "A modern event management platform designed with a scalable Vue.js frontend architecture, responsive interfaces and a polished admin experience.",
+
+  image:
+    "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1400&q=85",
+
+  technologies: [
+    "Vue.js",
+    "JavaScript",
+    "Vue Router",
+    "REST API",
+    "Bootstrap",
+    "Git",
+  ],
+
+  github:
+    "https://github.com/",
+
+  live:
+    "#",
+};
+
+
+const projects = [
+  {
+    title: "AI Portfolio Assistant",
+    category: "AI / Web App",
+
+    description:
+      "An AI-powered portfolio assistant that allows recruiters and visitors to interact with portfolio information through a conversational interface.",
+
+    image:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1000&q=85",
+
+    technologies: [
+      "Vue 3",
+      "AI",
+      "Qwen",
+      "Express",
+    ],
+
+    github:
+      "https://github.com/",
+
+    live:
+      "#",
+  },
+
+  {
+    title: "Modern Developer Portfolio",
+    category: "Portfolio",
+
+    description:
+      "A premium personal portfolio focused on animation, responsive design, dark themes and interactive project presentation.",
+
+    image:
+      "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=1000&q=85",
+
+    technologies: [
+      "Vue 3",
+      "Vite",
+      "Tailwind",
+      "JavaScript",
+    ],
+
+    github:
+      "https://github.com/",
+
+    live:
+      "#",
+  },
+
+  {
+    title: "Career Application Platform",
+    category: "Web Application",
+
+    description:
+      "A structured career application interface with dynamic job positions, application forms and reusable Vue components.",
+
+    image:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1000&q=85",
+
+    technologies: [
+      "Vue.js",
+      "Vue Router",
+      "Forms",
+      "API",
+    ],
+
+    github:
+      "https://github.com/",
+
+    live:
+      "#",
+  },
+
+  {
+    title: "Business Services Platform",
+    category: "Corporate Website",
+
+    description:
+      "A responsive business website with reusable sections, industry pages, technology pages and advanced theme support.",
+
+    image:
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1000&q=85",
+
+    technologies: [
+      "Vue.js",
+      "CSS",
+      "Bootstrap",
+      "Responsive UI",
+    ],
+
+    github:
+      "https://github.com/",
+
+    live:
+      "#",
+  },
+];
+
+
+/* =========================================================
+   FEATURED PROJECT 3D EFFECT
+========================================================= */
+
+const featuredRotateX = ref(0);
+const featuredRotateY = ref(0);
+
+const handleFeaturedMove = (event) => {
+  const element = event.currentTarget;
+  const rect = element.getBoundingClientRect();
+
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+
+  featuredRotateY.value =
+    ((x - centerX) / centerX) * 2;
+
+  featuredRotateX.value =
+    ((centerY - y) / centerY) * 2;
+
+  element.style.setProperty(
+    "--mouse-x",
+    `${x}px`
+  );
+
+  element.style.setProperty(
+    "--mouse-y",
+    `${y}px`
+  );
+};
+
+
+const resetFeatured = () => {
+  featuredRotateX.value = 0;
+  featuredRotateY.value = 0;
+};
+
+
+const featuredStyle = computed(() => ({
+  transform:
+    `perspective(1400px)
+     rotateX(${featuredRotateX.value}deg)
+     rotateY(${featuredRotateY.value}deg)`,
+}));
+
+
+/* =========================================================
+   PROJECT CARD 3D EFFECT
+========================================================= */
+
+const cardTransforms = ref(
+  projects.map(() => ({
+    x: 0,
+    y: 0,
+  }))
+);
+
+
+const handleCardMove = (event, index) => {
+  const card = event.currentTarget;
+  const rect = card.getBoundingClientRect();
+
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
+
+  cardTransforms.value[index] = {
+    x:
+      ((x - centerX) / centerX) * 2.5,
+
+    y:
+      ((centerY - y) / centerY) * 2.5,
+  };
+
+  card.style.setProperty(
+    "--mouse-x",
+    `${x}px`
+  );
+
+  card.style.setProperty(
+    "--mouse-y",
+    `${y}px`
+  );
+};
+
+
+const resetCard = (index) => {
+  cardTransforms.value[index] = {
+    x: 0,
+    y: 0,
+  };
+};
+</script>
+
+
 <style scoped>
 
-/* ========================================
-   PROJECTS SECTION
-======================================== */
+/* =========================================================
+   DARK MODE ONLY
+========================================================= */
 
 .projects-section {
-  padding: 120px 0;
-  background: var(--bg-primary);
+  position: relative;
+
+  padding: 140px 0;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(124, 58, 237, 0.09),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 90% 70%,
+      rgba(6, 182, 212, 0.07),
+      transparent 32%
+    ),
+    #05070b;
+
+  color: #ffffff;
 }
 
 
-/* ========================================
-   SECTION HEADING
-======================================== */
+/* =========================================================
+   BACKGROUND
+========================================================= */
 
-.section-heading {
-  text-align: center;
-  margin-bottom: 60px;
+.projects-bg {
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
 }
 
-.section-heading p {
-  margin-bottom: 10px;
+.bg-grid {
+  position: absolute;
 
-  color: var(--accent);
+  inset: 0;
+
+  opacity: 0.15;
+
+  background-image:
+    linear-gradient(
+      rgba(255,255,255,0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,0.035) 1px,
+      transparent 1px
+    );
+
+  background-size: 60px 60px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent,
+      black 20%,
+      black 80%,
+      transparent
+    );
+}
+
+.bg-orb {
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(100px);
+
+  opacity: 0.2;
+}
+
+.orb-1 {
+  width: 350px;
+  height: 350px;
+
+  left: -150px;
+  top: 10%;
+
+  background: #7c3aed;
+}
+
+.orb-2 {
+  width: 320px;
+  height: 320px;
+
+  right: -150px;
+  bottom: 10%;
+
+  background: #06b6d4;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container {
+  position: relative;
+
+  width:
+    min(
+      calc(100% - 40px),
+      1200px
+    );
+
+  margin: auto;
+
+  z-index: 2;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.section-header {
+  max-width: 720px;
+
+  margin-bottom: 65px;
+}
+
+.eyebrow {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 18px;
+
+  color: #8f96a8;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.2em;
+}
+
+.eyebrow-line {
+  width: 28px;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #8b5cf6,
+      #22d3ee
+    );
+}
+
+.section-header h2 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-family:
+    "Space Grotesk",
+    Inter,
+    sans-serif;
+
+  font-size:
+    clamp(44px, 5vw, 70px);
+
+  line-height: 0.98;
+
+  letter-spacing: -0.06em;
+}
+
+.section-header h2 span {
+  display: block;
+
+  background:
+    linear-gradient(
+      100deg,
+      #8b5cf6,
+      #22d3ee
+    );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+}
+
+.section-header p {
+  max-width: 620px;
+
+  margin:
+    24px 0 0;
+
+  color: #8f96a8;
 
   font-size: 14px;
 
-  font-weight: 600;
+  line-height: 1.8;
+}
+
+
+/* =========================================================
+   FEATURED PROJECT
+========================================================= */
+
+.featured-project {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    1.1fr 0.9fr;
+
+  min-height: 500px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.09);
+
+  border-radius: 30px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #111827,
+      #0b0f17
+    );
+
+  box-shadow:
+    0 35px 100px
+    rgba(0,0,0,0.4);
+
+  transform-style: preserve-3d;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.featured-project::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      350px circle at var(--mouse-x) var(--mouse-y),
+      rgba(139,92,246,0.13),
+      transparent 70%
+    );
+}
+
+.featured-project:hover {
+  border-color:
+    rgba(139,92,246,0.35);
+
+  box-shadow:
+    0 45px 120px
+    rgba(0,0,0,0.5);
+}
+
+
+/* =========================================================
+   FEATURED IMAGE
+========================================================= */
+
+.featured-image {
+  position: relative;
+
+  min-height: 500px;
+
+  overflow: hidden;
+}
+
+.featured-image img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  filter:
+    saturate(0.9)
+    contrast(1.03);
+
+  transition:
+    transform 0.8s ease,
+    filter 0.8s ease;
+}
+
+.featured-project:hover
+.featured-image img {
+  transform: scale(1.06);
+
+  filter:
+    saturate(1.05)
+    contrast(1.04);
+}
+
+.image-overlay {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 1;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 45%,
+      rgba(5,7,11,0.95)
+    );
+}
+
+.featured-badge {
+  position: absolute;
+
+  top: 24px;
+  left: 24px;
+
+  z-index: 3;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 8px 11px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.12);
+
+  border-radius: 999px;
+
+  background:
+    rgba(5,7,11,0.7);
+
+  backdrop-filter: blur(14px);
+
+  color: #ffffff;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+.featured-badge span {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #22d3ee;
+
+  box-shadow:
+    0 0 12px
+    rgba(34,211,238,0.8);
+}
+
+.image-number {
+  position: absolute;
+
+  bottom: 25px;
+  left: 25px;
+
+  z-index: 3;
+
+  color:
+    rgba(255,255,255,0.4);
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+}
+
+
+/* =========================================================
+   FEATURED CONTENT
+========================================================= */
+
+.featured-content {
+  position: relative;
+
+  z-index: 3;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding: 50px 45px;
+
+  transform: translateZ(30px);
+}
+
+.project-meta {
+  display: flex;
+
+  gap: 9px;
+
+  color: #a78bfa;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.13em;
 
   text-transform: uppercase;
-
-  letter-spacing: 2px;
 }
 
-.section-heading h2 {
+.featured-content h3 {
+  margin:
+    16px 0 16px;
+
+  color: #ffffff;
+
+  font-family:
+    "Space Grotesk",
+    Inter,
+    sans-serif;
+
+  font-size:
+    clamp(30px, 4vw, 48px);
+
+  line-height: 1;
+
+  letter-spacing: -0.055em;
+}
+
+.featured-content > p {
   margin: 0;
 
-  color: var(--text-primary);
+  color: #8f96a8;
 
-  font-size: clamp(36px, 5vw, 52px);
+  font-size: 13px;
 
-  line-height: 1.2;
-}
-
-.section-heading h2 span {
-  color: var(--accent);
+  line-height: 1.8;
 }
 
 
-/* ========================================
+/* =========================================================
+   TECH
+========================================================= */
+
+.tech-list {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  margin-top: 25px;
+}
+
+.tech-list span {
+  padding: 7px 9px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  border-radius: 7px;
+
+  background:
+    #151b26;
+
+  color: #a0a7b5;
+
+  font-size: 9px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.project-actions {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 9px;
+
+  margin-top: 30px;
+}
+
+.project-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 12px;
+
+  min-height: 44px;
+
+  padding: 0 17px;
+
+  border-radius: 11px;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.project-button:hover {
+  transform:
+    translateY(-3px);
+}
+
+.project-button.primary {
+  background:
+    linear-gradient(
+      110deg,
+      #7c3aed,
+      #0891b2
+    );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 10px 30px
+    rgba(124,58,237,0.25);
+}
+
+.project-button.primary:hover {
+  box-shadow:
+    0 15px 40px
+    rgba(124,58,237,0.4);
+}
+
+.project-button.secondary {
+  border:
+    1px solid
+    rgba(255,255,255,0.1);
+
+  background:
+    #151b26;
+
+  color: #ffffff;
+}
+
+.button-arrow {
+  font-size: 14px;
+}
+
+
+/* =========================================================
    PROJECT GRID
-======================================== */
+========================================================= */
 
 .projects-grid {
   display: grid;
 
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns:
+    repeat(2, 1fr);
 
-  gap: 30px;
+  gap: 20px;
+
+  margin-top: 22px;
 }
 
 
-/* ========================================
+/* =========================================================
    PROJECT CARD
-======================================== */
+========================================================= */
 
 .project-card {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+
+  position: relative;
+
   overflow: hidden;
 
-  background: var(--bg-secondary);
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
 
-  border: 1px solid var(--border);
+  border-radius: 23px;
 
-  border-radius: 18px;
+  background:
+    #0d121b;
+
+  transform-style: preserve-3d;
 
   transition:
-    transform 0.35s ease,
-    border-color 0.35s ease,
-    box-shadow 0.35s ease;
+    transform 0.18s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.project-card::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 4;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      220px circle at var(--mouse-x) var(--mouse-y),
+      rgba(139,92,246,0.12),
+      transparent 70%
+    );
+
+  opacity: 0;
+
+  transition:
+    opacity 0.3s ease;
 }
 
 .project-card:hover {
-  transform: translateY(-8px);
-
-  border-color: var(--accent);
+  border-color:
+    rgba(139,92,246,0.32);
 
   box-shadow:
-    0 20px 45px rgba(0, 0, 0, 0.12);
+    0 30px 80px
+    rgba(0,0,0,0.45);
+}
+
+.project-card:hover::before {
+  opacity: 1;
 }
 
 
-/* ========================================
-   PROJECT IMAGE
-======================================== */
+/* =========================================================
+   CARD IMAGE
+========================================================= */
 
 .project-image {
-  height: 240px;
-
   position: relative;
+
+  height: 270px;
 
   overflow: hidden;
-
-  padding: 20px;
-
-  background:
-    linear-gradient(
-      135deg,
-      var(--accent),
-      #0f172a
-    );
 }
 
+.project-image img {
+  width: 100%;
+  height: 100%;
 
-/* ========================================
-   BACKGROUND DECORATION
-======================================== */
+  object-fit: cover;
 
-.project-image::before {
-  content: '';
+  display: block;
 
+  transition:
+    transform 0.7s ease;
+}
+
+.project-card:hover
+.project-image img {
+  transform:
+    scale(1.09);
+}
+
+.image-shade {
   position: absolute;
 
-  width: 200px;
-  height: 200px;
+  inset: 0;
 
-  border-radius: 50%;
-
-  background: rgba(255, 255, 255, 0.07);
-
-  top: -90px;
-  right: -50px;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.05),
+      rgba(0,0,0,0.65)
+    );
 }
 
-.project-image::after {
-  content: '';
-
+.project-index {
   position: absolute;
 
-  width: 130px;
-  height: 130px;
+  top: 18px;
+  left: 18px;
 
-  border-radius: 25px;
+  color:
+    rgba(255,255,255,0.65);
 
-  background: rgba(255, 255, 255, 0.05);
+  font-size: 10px;
 
-  bottom: -55px;
-  left: -30px;
-
-  transform: rotate(30deg);
+  font-weight: 800;
 }
 
+.project-category {
+  position: absolute;
 
-/* ========================================
-   PROJECT VARIATIONS
-======================================== */
+  right: 16px;
+  top: 16px;
 
-.project-two {
+  padding: 7px 9px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.12);
+
+  border-radius: 999px;
+
   background:
-    linear-gradient(
-      135deg,
-      #334155,
-      var(--accent)
-    );
+    rgba(0,0,0,0.5);
+
+  backdrop-filter: blur(10px);
+
+  color: #ffffff;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
 }
 
-.project-three {
+
+/* =========================================================
+   IMAGE REVEAL
+========================================================= */
+
+.image-reveal {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 9px;
+
   background:
-    linear-gradient(
-      135deg,
-      #1e293b,
-      #6366f1
-    );
+    rgba(7,9,15,0.7);
+
+  backdrop-filter: blur(4px);
+
+  color: #ffffff;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  opacity: 0;
+
+  transform:
+    scale(1.04);
+
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
 
-.project-four {
-  background:
-    linear-gradient(
-      135deg,
-      #312e81,
-      #475569
-    );
+.project-card:hover .image-reveal {
+  opacity: 1;
+
+  transform:
+    scale(1);
 }
 
-
-/* ========================================
-   BROWSER BAR
-======================================== */
-
-.browser-bar {
-  position: relative;
-
-  z-index: 10;
-
+.reveal-arrow {
+  width: 28px;
   height: 28px;
 
   display: flex;
 
   align-items: center;
-
-  gap: 6px;
-
-  padding: 0 12px;
-
-  background: rgba(255, 255, 255, 0.95);
-
-  border-radius: 9px 9px 0 0;
-}
-
-.browser-bar span {
-  width: 7px;
-  height: 7px;
-
-  border-radius: 50%;
-
-  background: #94a3b8;
-}
-
-
-/* ========================================
-   BROWSER CONTENT
-======================================== */
-
-.browser-content {
-  position: relative;
-
-  z-index: 9;
-
-  display: flex;
-
-  height: 165px;
-
-  overflow: hidden;
-
-  background: #f8fafc;
-
-  border-radius: 0 0 9px 9px;
-
-  box-shadow:
-    0 15px 30px rgba(0, 0, 0, 0.22);
-}
-
-
-/* ========================================
-   MOCK SIDEBAR
-======================================== */
-
-.mock-sidebar {
-  width: 22%;
-
-  flex-shrink: 0;
-
-  padding: 12px 8px;
-
-  background: #1e293b;
-}
-
-.sidebar-logo {
-  width: 45%;
-
-  height: 8px;
-
-  margin: 4px auto 18px;
-
-  border-radius: 4px;
-
-  background: #6366f1;
-}
-
-.sidebar-line {
-  width: 75%;
-
-  height: 6px;
-
-  margin: 12px auto;
-
-  border-radius: 4px;
-
-  background: rgba(255, 255, 255, 0.18);
-}
-
-
-/* ========================================
-   MOCK MAIN
-======================================== */
-
-.mock-main {
-  flex: 1;
-
-  padding: 18px;
-}
-
-
-/* ========================================
-   MOCK TOP
-======================================== */
-
-.mock-top {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  margin-bottom: 18px;
-}
-
-.mock-heading {
-  width: 40%;
-
-  height: 9px;
-
-  border-radius: 5px;
-
-  background: #334155;
-}
-
-.mock-button {
-  width: 50px;
-
-  height: 18px;
-
-  border-radius: 5px;
-
-  background: #6366f1;
-}
-
-
-/* ========================================
-   MOCK CARDS
-======================================== */
-
-.mock-cards {
-  display: grid;
-
-  grid-template-columns: repeat(3, 1fr);
-
-  gap: 8px;
-
-  margin-bottom: 14px;
-}
-
-.mock-cards div {
-  height: 43px;
-
-  border-radius: 6px;
-
-  background: #dbeafe;
-
-  border: 1px solid #cbd5e1;
-}
-
-
-/* ========================================
-   MOCK TABLE
-======================================== */
-
-.mock-table {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 5px;
-
-  width: 100%;
-}
-
-.mock-table div {
-  height: 6px;
-
-  border-radius: 3px;
-
-  background: #cbd5e1;
-}
-
-.mock-table div:nth-child(1) {
-  width: 90%;
-}
-
-.mock-table div:nth-child(2) {
-  width: 75%;
-}
-
-.mock-table div:nth-child(3) {
-  width: 85%;
-}
-
-
-/* ========================================
-   PREVIEW LABEL
-======================================== */
-
-.preview-label {
-  position: absolute;
-
-  z-index: 20;
-
-  left: 50%;
-  bottom: 15px;
-
-  transform: translateX(-50%);
-
-  padding: 7px 14px;
-
-  border-radius: 20px;
-
-  background: rgba(15, 23, 42, 0.88);
-
-  color: #ffffff;
-
-  font-size: 11px;
-
-  font-weight: 600;
-
-  white-space: nowrap;
-
-  backdrop-filter: blur(8px);
-}
-
-
-/* ========================================
-   PORTFOLIO PREVIEW
-======================================== */
-
-.portfolio-preview {
-  display: block;
-
-  padding: 12px;
-
-  background: #ffffff;
-}
-
-.portfolio-nav {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  margin-bottom: 18px;
-}
-
-.portfolio-logo {
-  width: 35px;
-  height: 7px;
-
-  border-radius: 4px;
-
-  background: #6366f1;
-}
-
-.portfolio-links {
-  display: flex;
-
-  gap: 7px;
-}
-
-.portfolio-links span {
-  width: 20px;
-  height: 4px;
-
-  border-radius: 3px;
-
-  background: #cbd5e1;
-}
-
-.portfolio-hero {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  padding: 5px 15px;
-}
-
-.portfolio-text {
-  width: 55%;
-}
-
-.portfolio-text div {
-  height: 6px;
-
-  margin-bottom: 7px;
-
-  border-radius: 4px;
-
-  background: #334155;
-}
-
-.portfolio-text div:nth-child(1) {
-  width: 75%;
-}
-
-.portfolio-text div:nth-child(2) {
-  width: 90%;
-}
-
-.portfolio-text div:nth-child(3) {
-  width: 60%;
-}
-
-.portfolio-avatar {
-  width: 55px;
-  height: 55px;
+  justify-content: center;
 
   border-radius: 50%;
 
   background:
     linear-gradient(
       135deg,
-      #6366f1,
-      #c7d2fe
+      #7c3aed,
+      #06b6d4
     );
 }
 
-.portfolio-buttons {
-  display: flex;
 
-  gap: 8px;
+/* =========================================================
+   CARD CONTENT
+========================================================= */
 
-  margin: 12px 15px;
+.project-card-content {
+  position: relative;
+
+  z-index: 5;
+
+  padding: 22px;
+
+  background:
+    #0d121b;
 }
 
-.portfolio-buttons span {
-  width: 45px;
-  height: 13px;
-
-  border-radius: 4px;
-
-  background: #6366f1;
-}
-
-.portfolio-buttons span:last-child {
-  background: #e2e8f0;
-}
-
-
-/* ========================================
-   CAREER PREVIEW
-======================================== */
-
-.career-preview {
-  display: block;
-
-  padding: 12px;
-
-  background: #ffffff;
-}
-
-.career-header {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  margin-bottom: 20px;
-}
-
-.career-logo {
-  width: 45px;
-  height: 8px;
-
-  border-radius: 4px;
-
-  background: #6366f1;
-}
-
-.career-nav {
-  display: flex;
-
-  gap: 7px;
-}
-
-.career-nav span {
-  width: 20px;
-  height: 4px;
-
-  border-radius: 3px;
-
-  background: #cbd5e1;
-}
-
-.career-content {
-  padding: 5px 15px;
-}
-
-.career-title {
-  width: 50%;
-
-  height: 8px;
-
-  margin-bottom: 15px;
-
-  border-radius: 4px;
-
-  background: #334155;
-}
-
-.career-form {
-  display: grid;
-
-  grid-template-columns: 1fr 1fr;
-
-  gap: 8px;
-}
-
-.career-form div {
-  height: 22px;
-
-  border: 1px solid #cbd5e1;
-
-  border-radius: 4px;
-
-  background: #f8fafc;
-}
-
-.career-form div:last-child {
-  grid-column: span 2;
-
-  height: 35px;
-}
-
-
-/* ========================================
-   PROJECT CONTENT
-======================================== */
-
-.project-content {
-  padding: 30px;
-}
-
-
-/* ========================================
-   PROJECT HEADER
-======================================== */
-
-.project-top {
+.project-card-top {
   display: flex;
 
   align-items: center;
@@ -1126,222 +1355,352 @@
   justify-content: space-between;
 
   gap: 15px;
-
-  margin-bottom: 15px;
 }
 
-.project-top h3 {
+.project-card h3 {
   margin: 0;
 
-  color: var(--text-primary);
+  color: #ffffff;
 
-  font-size: 23px;
+  font-family:
+    "Space Grotesk",
+    Inter,
+    sans-serif;
 
-  line-height: 1.3;
+  font-size: 20px;
+
+  letter-spacing: -0.035em;
 }
 
-.project-status {
-  flex-shrink: 0;
+.card-arrow {
+  color:
+    #8b5cf6;
 
-  padding: 6px 10px;
+  font-size: 18px;
 
-  border-radius: 20px;
+  transition:
+    transform 0.25s ease;
+}
 
-  background: rgba(99, 102, 241, 0.1);
+.project-card:hover .card-arrow {
+  transform:
+    translate(3px,-3px);
+}
 
-  color: var(--accent);
+.project-card-content > p {
+  margin:
+    10px 0 16px;
+
+  color:
+    #8f96a8;
 
   font-size: 11px;
-
-  font-weight: 600;
-}
-
-
-/* ========================================
-   DESCRIPTION
-======================================== */
-
-.project-content > p {
-  margin-bottom: 20px;
-
-  color: var(--text-secondary);
-
-  font-size: 15px;
 
   line-height: 1.7;
 }
 
 
-/* ========================================
-   TAGS
-======================================== */
+/* =========================================================
+   CARD TECH
+========================================================= */
 
-.project-tags {
+.card-tech {
   display: flex;
 
   flex-wrap: wrap;
 
-  gap: 8px;
-
-  margin-bottom: 25px;
+  gap: 6px;
 }
 
-.project-tags span {
-  padding: 6px 10px;
+.card-tech span {
+  padding: 5px 7px;
 
   border-radius: 6px;
 
-  background: var(--bg-primary);
+  background:
+    rgba(139,92,246,0.09);
 
-  border: 1px solid var(--border);
+  color:
+    #a78bfa;
 
-  color: var(--text-secondary);
+  font-size: 8px;
 
-  font-size: 12px;
-
-  transition:
-    color 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.project-card:hover .project-tags span {
-  border-color: rgba(99, 102, 241, 0.25);
+  font-weight: 700;
 }
 
 
-/* ========================================
-   PROJECT LINKS
-======================================== */
+/* =========================================================
+   CARD ACTIONS
+========================================================= */
 
-.project-links {
+.card-actions {
   display: flex;
 
-  align-items: center;
+  gap: 7px;
 
-  gap: 20px;
+  margin-top: 19px;
 }
 
-.project-link,
-.project-demo {
+.small-button {
   display: inline-flex;
 
   align-items: center;
 
-  gap: 5px;
+  justify-content: center;
 
-  font-size: 14px;
+  min-height: 32px;
 
-  font-weight: 600;
+  padding: 0 10px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  border-radius: 8px;
+
+  background:
+    #151b26;
+
+  color:
+    #a0a7b5;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  text-decoration: none;
 
   transition:
-    color 0.3s ease,
-    transform 0.3s ease;
+    transform 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
-.project-link {
-  color: var(--text-primary);
+.small-button:hover {
+  transform:
+    translateY(-2px);
+
+  color: #ffffff;
+
+  background:
+    #1c2533;
 }
 
-.project-demo {
-  color: var(--accent);
+.small-button.filled {
+  background:
+    linear-gradient(
+      110deg,
+      rgba(124,58,237,0.85),
+      rgba(8,145,178,0.85)
+    );
+
+  color: #ffffff;
+
+  border-color:
+    transparent;
 }
 
-.project-link:hover,
-.project-demo:hover {
-  color: var(--accent);
 
-  transform: translateY(-2px);
+/* =========================================================
+   FOOTER CTA
+========================================================= */
+
+.projects-footer {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-top: 90px;
+
+  padding-top: 35px;
+
+  border-top:
+    1px solid
+    rgba(255,255,255,0.08);
 }
 
-.project-link span,
-.project-demo span {
-  font-size: 16px;
+.footer-label {
+  color:
+    #8b5cf6;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.18em;
+}
+
+.projects-footer h3 {
+  margin: 9px 0 0;
+
+  color: #ffffff;
+
+  font-family:
+    "Space Grotesk",
+    Inter,
+    sans-serif;
+
+  font-size: 27px;
+
+  letter-spacing: -0.04em;
+}
+
+.projects-footer h3 span {
+  color:
+    #8b5cf6;
+}
+
+.all-projects-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 25px;
+
+  padding: 13px 16px;
+
+  border:
+    1px solid
+    rgba(139,92,246,0.25);
+
+  border-radius: 12px;
+
+  background:
+    rgba(139,92,246,0.08);
+
+  color: #ffffff;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.all-projects-button:hover {
+  transform:
+    translateY(-3px);
+
+  background:
+    rgba(139,92,246,0.16);
+
+  border-color:
+    rgba(139,92,246,0.45);
+}
+
+.all-projects-button span:last-child {
+  color:
+    #a78bfa;
+
+  font-size: 17px;
 }
 
 
-/* ========================================
-   TABLET
-======================================== */
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
 @media (max-width: 900px) {
+
+  .featured-project {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-image {
+    min-height: 380px;
+  }
+
+  .featured-content {
+    padding: 35px;
+  }
+}
+
+
+@media (max-width: 700px) {
+
+  .projects-section {
+    padding: 100px 0;
+  }
+
+  .container {
+    width:
+      calc(100% - 30px);
+  }
+
+  .section-header h2 {
+    font-size: 44px;
+  }
 
   .projects-grid {
     grid-template-columns: 1fr;
   }
 
   .project-image {
-    height: 250px;
+    height: 240px;
   }
 
-}
-
-
-/* ========================================
-   MOBILE
-======================================== */
-
-@media (max-width: 600px) {
-
-  .projects-section {
-    padding: 80px 0;
-  }
-
-  .section-heading {
-    margin-bottom: 40px;
-  }
-
-  .section-heading h2 {
-    font-size: 36px;
-  }
-
-  .project-image {
-    height: 205px;
-
-    padding: 15px;
-  }
-
-  .browser-content {
-    height: 140px;
-  }
-
-  .mock-main {
-    padding: 12px;
-  }
-
-  .mock-cards div {
-    height: 32px;
-  }
-
-  .mock-table div {
-    height: 5px;
-  }
-
-  .project-content {
-    padding: 22px;
-  }
-
-  .project-top {
+  .projects-footer {
     align-items: flex-start;
+
+    flex-direction: column;
+  }
+}
+
+
+@media (max-width: 500px) {
+
+  .featured-project {
+    border-radius: 22px;
   }
 
-  .project-top h3 {
-    font-size: 20px;
+  .featured-image {
+    min-height: 280px;
   }
 
-  .project-status {
-    font-size: 10px;
-
-    padding: 5px 8px;
+  .featured-content {
+    padding: 25px;
   }
 
-  .project-content > p {
-    font-size: 14px;
+  .featured-content h3 {
+    font-size: 32px;
   }
 
-  .project-links {
-    gap: 15px;
+  .project-actions {
+    flex-direction: column;
+  }
+
+  .project-button {
+    width: 100%;
+  }
+
+  .project-card-content {
+    padding: 18px;
   }
 
 }
 
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .featured-project,
+  .project-card,
+  .project-image img,
+  .image-reveal {
+    transition: none;
+  }
+
+}
 </style>
